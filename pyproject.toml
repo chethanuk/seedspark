@@ -1,0 +1,145 @@
+[tool.poetry]
+name = "seedspark"
+version = "0.1.0"
+description = "Dump Spark Utlity for personal use"
+authors = ["ChethanUK <chethanuk@outlook.com>"]
+maintainers = ["ChethanUK <chethanuk@outlook.com>"]
+license = "Apache-2.0"
+readme = "README.MD"
+homepage = "https://github.com/ChethanUK/"
+repository = "https://github.com/ChethanUK/seedspark"
+keywords = [
+    "PySpark",
+    "data-ops",
+    "data-engineering",
+    "data-quality",
+    "data-profiling",
+    "dataquality",
+    "dataunittest",
+    "data-unit-tests",
+    "data-profilers",
+    "data-engineer",
+    "best-practices",
+    "big-data"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Software Development :: Data Engineering Assurance"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7.1,<4.0"
+loguru = "^0.5.3"
+pyspark = { version = ">=2.4.7, <3.1.1", extras = ["sql"], optional = true }
+pyarrow = { version = "2.0.0", optional = true }  # "^4.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.2"
+pyspark-stubs = "^3.0.0"
+mypy = "^0.812"
+black = "^20.8b1"
+flake8 = "^3.9.0"
+pre-commit = "^2.12.0"
+testcontainers = "^3.4.0"
+pytest-docker-tools = "^1.0.3"
+pytest-timeout = "^1.4.2"
+pytest-lazy-fixture = "^0.6.3"
+pytest-ordering = "^0.6"
+pytest-mock = "^3.5.1"
+pytest-tldr = "^0.2.4"
+pytest-picked = "^0.4.6"
+pytest-instafail = "^0.4.2"
+pytest-deadfixtures = "^2.2.1"
+pytest-helpers-namespace = "^2021.3.24"
+pytest-icdiff = "^0.5"
+pytest-runner = "^5.3.0"
+pytest-xdist = "^2.2.1"
+pytest-rerunfailures = "^10.0"
+flake8-docstrings = "^1.6.0"
+pytest-flake8 = "^1.0.7"
+hypothesis = "^6.9.1"
+pydantic = "^1.8.1"
+great-expectations = "^0.13.19"
+#pydeequ3 = { file = "/Users/chethanuk/Work/Github/deequ/pydeequ3/dist/pydeequ3-0.1.7-py3-none-any.whl" }
+pydeequ3 = "^0.1.8"
+flaky = "^3.7.0"
+coverage = "^5.5"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+## Black
+[tool.black]
+# https://github.com/psf/black
+line-length = 110
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+target_version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.tox
+  | \.venv
+  | htmlcov
+  | _build
+  | buck-out
+  | build
+  | dist
+  # The following are specific to Black, you probably don't want those.
+  | blib2to3
+  | tests/data
+  | profiling
+  | tests/airflow-dags/
+)/
+'''
+
+[tool.isort]
+# https://github.com/timothycrosley/isort
+# https://github.com/timothycrosley/isort/wiki/isort-Settings
+profile = "black"
+line_length = 110
+indent = '    '
+multi_line_output = 3
+include_trailing_comma = true
+#force_grid_wrap = 0
+atomic = true
+#lines_after_imports = 2
+#lines_between_types = 1
+skip_glob = ['__init__.py', 'tests/airflow-dags/']
+#src_paths=isort,test
+
+[mypy]
+python_version = 3.8
+#warn_return_any = True
+#warn_unused_configs = True
+
+#[mypy-pyspark.*]
+#ignore_missing_imports = True
+
+[pytest]
+testpaths = "tests"
+norecursedirs = ".git .* *.egg* old docs dist build *.venv docs/_build *.egg .tox"
+# python_files = tests/functional* tests/integration*
+cache_dir = "./.pytest_cache"
+python_files = "*test_*.py"
+timeout = 300
+looponfailroots = "pydeequ tests"
+addopts = "--reruns 3 --reruns-delay 10 --dist loadscope --cov workspace --cov-report xml --cov-report term-missing"

@@ -1,0 +1,225 @@
+# TODO: Remove tests later on
+exclude: >
+  (?x)^(
+      .+/.venv/.+|
+      .+/dist/.+|
+      .+/.autovenv
+      .+/tests/dags/
+  )$
+fail_fast: true
+default_language_version:
+  python: python3
+default_stages:
+  - prepare-commit-msg
+  - commit
+  - push
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-case-conflict
+      - id: check-merge-conflict
+        stages:
+          - commit
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+        stages:
+          - commit
+      - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
+      - id: fix-encoding-pragma
+      - id: detect-private-key
+      - id: destroyed-symlinks
+      - id: check-ast
+      - id: name-tests-test
+        args: ['--django']
+        exclude: tests/base_spark_test.py|tests/strategies.py|tests/log/strategies.py
+      - id: end-of-file-fixer
+        description: Ensures that a file is either empty, or ends with one newline.
+        exclude_types: [ sql ]
+        # types: [text]
+
+  - repo: https://github.com/psf/black
+    rev: 21.5b1
+    hooks:
+      - id: black
+        args: [ --safe, --quiet ]
+        files: \.pyi?$
+        exclude: scala|doc/
+        # override until resolved: https://github.com/psf/black/issues/402
+        types: [ ]
+
+  - repo: https://github.com/myint/autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        exclude: &fixtures tests/functional/|tests/input|tests/extensions/data|tests/regrtest_data/|tests/data/
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --expand-star-imports
+          - --remove-duplicate-keys
+          - --remove-unused-variables
+
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.8.0
+    hooks:
+      - id: isort
+        language_version: python3
+        args: [ "--profile", "black" ]
+        files: \.py$
+        exclude: scala
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 0.6.0a1
+    hooks:
+      - id: sqlfluff-fix
+        name: sqlfluff-fix
+        # Needs to use "--force" to disable confirmation
+        # By default all the rules are applied
+        entry: sqlfluff fix --force
+        language: python
+        description: 'Fixes sql lint errors with `SQLFluff`'
+        types: [ sql ]
+        require_serial: true
+        additional_dependencies: [ ]
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 0.6.0a1
+    hooks:
+      - id: sqlfluff-lint
+        name: sqlfluff-lint
+        entry: sqlfluff lint
+        language: python
+        description: 'Lints sql files with `SQLFluff`'
+        types: [ sql ]
+        require_serial: true
+        additional_dependencies: [ ]
+        exclude: tests/operators/postgres-init.sql
+
+#  - repo: https://github.com/asottile/pyupgrade
+#    rev: v2.12.0
+#    hooks:
+#    - id: pyupgrade
+#      args: ['--py37-plus','--exit-zero-even-if-changed']
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        args: [ '--config=.flake8' ]
+        # exclude: *fixtures
+        exclude: scala|doc/|tests/|seedspark/jobs/data.py
+        additional_dependencies:
+          # Finding likely bugs and design problems in your program.
+          - flake8-bugbear
+          # Check for python builtins being used as variables or parameters.
+          - flake8-builtins
+          #  Helps you write better list/set/dict comprehensions.
+          - flake8-comprehensions
+          # Adds coding magic comment checks (coding:) to flake8.
+          - flake8-coding
+          - flake8-deprecated
+          # Plugin to find commented out or dead code.
+          # - flake8-eradicate
+          # Extension for mutable default arguments.
+          - flake8-mutable
+          # Plugin to ensure a consistent _format for multiline containers.
+          - flake8-multiline-containers
+          # Checks for old string formatting
+          - flake8-pep3101
+          # Extension that implements misc. lints.
+          - flake8-pie
+          # Check for print statements in python files.
+          - flake8-print
+          # Plugin which forbids printf-style string formatting.
+          - flake8-printf-formatting
+          # Plugin checking common style issues or inconsistencies with pytest-based tests.
+          - flake8-pytest-style
+          # Extension for checking quotes in python.
+          - flake8-quotes
+          # Plugin that helps you to simplify code
+          - flake8-simplify
+          # Spellcheck variables, classnames, comments, docstrings etc.
+          - flake8-spellcheck
+          # Check the PEP-8 naming conventions
+          - pep8-naming
+          # Jump-start into modern Python by forcing yourself to use f-strings.
+          - flake8-use-fstring
+          # Plugin that checks Python tests follow the Arrange-Act-Assert pattern
+          - flake8-aaa
+          #  Flake8 unittest assert method checker
+          # - flake8-assertive
+          # Plugin which forbids printf-style string formatting.
+          # Plugin for validation of function parameters (length, complexity, etc).
+          # - flake8-functions
+          # Flake8 meet isort
+          - flake8-isort
+          #  check the strings and parameters using str
+          - flake8-string-_format
+          # Python String Formatting Style (SFS) plugin for flake8
+          - flake8-sfs
+          # A flake8 plugin that helps you write tidier imports
+          - flake8-tidy-imports
+#          - flake8-comprehensions
+#          - flake8-debugger
+#          - flake8-docstrings
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.0
+    hooks:
+      - id: bandit
+        args: [ "-ll", "-r", "airflow1x" ]
+        files: .py$
+        exclude: tests/conftest.py
+
+  # Jupyter notebooks
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 0.10.0
+    hooks:
+      - id: nbqa-black
+        args: [--nbqa-mutate]
+      - id: nbqa-pyupgrade
+        args: [--nbqa-mutate, --py36-plus]
+      - id: nbqa-isort
+        args: [--nbqa-mutate]
+
+  # - repo: https://github.com/isidentical/teyit
+  #   rev: 2eaaabed645b33822de0e310851c0c7abfaa500b
+  #   hooks:
+  #     - id: teyit
+  #       name: teyit
+  #       description: 'Unittest assertion formatter'
+
+  # - repo: local
+  #   hooks:
+  #     - id: run pytest
+  #       name: run pytest
+  #       stages: [ post-commit ]
+  #       always_run: true
+  #       entry: poetry run pytest tests/
+  #       language: python
+  #       language_version: python3
+  #       pass_filenames: false
+
+#  - repo: https://github.com/lensvol/pybetter
+#    rev: release-0.3.6.1
+#    hooks:
+#      - id: pybetter
+#        name: pybetter
+
+
+
+# - repo: https://github.com/pre-commit/mirrors-mypy
+#   rev: v0.812
+#   hooks:
+#     - id: mypy
+#       name: mypy
+#       entry: mypy
+#       language: python
+#       types: [ python ]
+#       args: [ "--ignore-missing-imports", "--scripts-are-modules" ]
+#       require_serial: true
+#       additional_dependencies: [ ]
+#       exclude: tests/functional/|tests/input|tests/extensions/data|tests/regrtest_data/|tests/data/|doc/|bin/

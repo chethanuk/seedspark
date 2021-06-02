@@ -8,6 +8,7 @@ license = "Apache-2.0"
 readme = "README.MD"
 homepage = "https://github.com/ChethanUK/"
 repository = "https://github.com/ChethanUK/seedspark"
+documentation = "https://github.com/ChethanUK/seedspark#readme"
 keywords = [
     "PySpark",
     "data-ops",

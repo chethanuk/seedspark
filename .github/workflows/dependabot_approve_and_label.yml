@@ -85,7 +85,7 @@ jobs:
         if: |
           needs.evaluate_dependabot_pr.outputs.is_auto_merge_candidate == 'True' &&
           (needs.evaluate_dependabot_pr.outputs.semver_increment == 'minor' || needs.evaluate_dependabot_pr.outputs.semver_increment == 'patch')
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v6
         with:
           github-token: '${{ steps.generate_token.outputs.token }}'
           script: |
@@ -112,7 +112,7 @@ jobs:
           (github.actor == 'dependabot[bot]' || github.actor == 'dependjinbot[bot]' || github.actor == 'nektos/act') &&
           needs.evaluate_dependabot_pr.outputs.is_auto_merge_candidate == 'True' &&
           (needs.evaluate_dependabot_pr.outputs.semver_increment == 'minor' || needs.evaluate_dependabot_pr.outputs.semver_increment == 'patch')
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v6
         with:
           github-token: '${{ steps.generate_token.outputs.token }}'
           script: |
@@ -126,7 +126,7 @@ jobs:
         if: |
           (github.actor != 'dependabot[bot]' && github.actor != 'dependjinbot[bot]') ||
           needs.evaluate_dependabot_pr.outputs.is_auto_release_candidate == 'True'
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v6
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           script: |

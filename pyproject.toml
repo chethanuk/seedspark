@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "seedspark"
-version = "0.1.0"
-description = "Dump Spark Utlity for personal use"
+version = "0.1.7"
+description = "SeedSpark is an Extensible PySpark utility package to create production spark pipelines and dev-test them in dev environments"
 authors = ["ChethanUK <chethanuk@outlook.com>"]
 maintainers = ["ChethanUK <chethanuk@outlook.com>"]
 license = "Apache-2.0"
-readme = "README.MD"
+readme = "README.md"
 homepage = "https://github.com/ChethanUK/"
 repository = "https://github.com/ChethanUK/seedspark"
 documentation = "https://github.com/ChethanUK/seedspark#readme"
@@ -30,21 +30,21 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "License :: OSI Approved :: Apache Software License",
-    "Topic :: Software Development :: Data Engineering Assurance"
+    "Topic :: Software Development :: Testing"
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7.1,<4.0"
-loguru = "^0.5.3"
-pyspark = { version = ">=2.4.7, <3.1.1", extras = ["sql"], optional = true }
-pyarrow = { version = "2.0.0", optional = true }  # "^4.0.1"
+python = ">=3.6.1,<4.0"
+pyspark = { version = ">=2.4.7, <=3.1.2", extras = ["sql"], optional = true }
+pyarrow = { version = ">=2.0.0", optional = true }  # "^4.0.1"
+lognub = "^0.1.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
-pyspark-stubs = "^3.0.0"
 mypy = "^0.812"
 black = "^20.8b1"
 flake8 = "^3.9.0"

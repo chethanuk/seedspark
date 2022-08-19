@@ -11,7 +11,7 @@ jobs:
     name: "Cancel duplicate workflow runs"
     runs-on: ubuntu-latest
     steps:
-      - uses: potiuk/cancel-workflow-runs@8248bc1feff049e98c0e6a96889b147199c38203
+      - uses: potiuk/cancel-workflow-runs@e9e87cb7738dbb999654aa90d69359d62c9e4eae
         name: "Cancel duplicate workflow runs"
         with:
           cancelMode: allDuplicates

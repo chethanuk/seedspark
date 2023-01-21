@@ -13,9 +13,20 @@ default_stages:
   - prepare-commit-msg
   - commit
   - push
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ""
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.4.0
     hooks:
       - id: check-case-conflict
       - id: check-merge-conflict
@@ -33,25 +44,25 @@ repos:
       - id: destroyed-symlinks
       - id: check-ast
       - id: name-tests-test
-        args: ['--django']
+        args: ["--django"]
         exclude: tests/base_spark_test.py|tests/strategies.py|tests/log/strategies.py
       - id: end-of-file-fixer
         description: Ensures that a file is either empty, or ends with one newline.
-        exclude_types: [ sql ]
+        exclude_types: [sql]
         # types: [text]
 
   - repo: https://github.com/psf/black
-    rev: 21.5b1
+    rev: 22.12.0
     hooks:
       - id: black
-        args: [ --safe, --quiet ]
+        args: [--safe, --quiet]
         files: \.pyi?$
         exclude: scala|doc/
         # override until resolved: https://github.com/psf/black/issues/402
-        types: [ ]
+        types: []
 
   - repo: https://github.com/myint/autoflake
-    rev: v1.4
+    rev: v2.0.0
     hooks:
       - id: autoflake
         exclude: &fixtures tests/functional/|tests/input|tests/extensions/data|tests/regrtest_data/|tests/data/
@@ -63,16 +74,16 @@ repos:
           - --remove-unused-variables
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.8.0
+    rev: 5.11.4
     hooks:
       - id: isort
         language_version: python3
-        args: [ "--profile", "black" ]
+        args: ["--profile", "black"]
         files: \.py$
         exclude: scala
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 0.6.0a1
+    rev: 2.0.0a3
     hooks:
       - id: sqlfluff-fix
         name: sqlfluff-fix
@@ -80,35 +91,35 @@ repos:
         # By default all the rules are applied
         entry: sqlfluff fix --force
         language: python
-        description: 'Fixes sql lint errors with `SQLFluff`'
-        types: [ sql ]
+        description: "Fixes sql lint errors with `SQLFluff`"
+        types: [sql]
         require_serial: true
-        additional_dependencies: [ ]
+        additional_dependencies: []
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 0.6.0a1
+    rev: 2.0.0a3
     hooks:
       - id: sqlfluff-lint
         name: sqlfluff-lint
         entry: sqlfluff lint
         language: python
-        description: 'Lints sql files with `SQLFluff`'
-        types: [ sql ]
+        description: "Lints sql files with `SQLFluff`"
+        types: [sql]
         require_serial: true
-        additional_dependencies: [ ]
+        additional_dependencies: []
         exclude: tests/operators/postgres-init.sql
 
-#  - repo: https://github.com/asottile/pyupgrade
-#    rev: v2.12.0
-#    hooks:
-#    - id: pyupgrade
-#      args: ['--py37-plus','--exit-zero-even-if-changed']
+  #  - repo: https://github.com/asottile/pyupgrade
+  #    rev: v2.12.0
+  #    hooks:
+  #    - id: pyupgrade
+  #      args: ['--py37-plus','--exit-zero-even-if-changed']
 
   - repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 6.0.0
     hooks:
       - id: flake8
-        args: [ '--config=.flake8' ]
+        args: ["--config=.flake8"]
         # exclude: *fixtures
         exclude: scala|doc/|tests/|seedspark/jobs/data.py
         additional_dependencies:
@@ -162,21 +173,21 @@ repos:
           - flake8-sfs
           # A flake8 plugin that helps you write tidier imports
           - flake8-tidy-imports
-#          - flake8-comprehensions
-#          - flake8-debugger
-#          - flake8-docstrings
+  #          - flake8-comprehensions
+  #          - flake8-debugger
+  #          - flake8-docstrings
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.0
+    rev: 1.7.4
     hooks:
       - id: bandit
-        args: [ "-ll", "-r", "airflow1x" ]
+        args: ["-ll", "-r", "airflow1x"]
         files: .py$
         exclude: tests/conftest.py
 
   # Jupyter notebooks
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.10.0
+    rev: 1.6.1
     hooks:
       - id: nbqa-black
         args: [--nbqa-mutate]
@@ -202,14 +213,11 @@ repos:
   #       language: python
   #       language_version: python3
   #       pass_filenames: false
-
 #  - repo: https://github.com/lensvol/pybetter
 #    rev: release-0.3.6.1
 #    hooks:
 #      - id: pybetter
 #        name: pybetter
-
-
 
 # - repo: https://github.com/pre-commit/mirrors-mypy
 #   rev: v0.812

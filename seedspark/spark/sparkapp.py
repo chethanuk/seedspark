@@ -85,7 +85,16 @@ class SparkApps:
         """
         import logging
 
-        if level is not None and level is ["ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN"]:
+        if level is not None and level is [
+            "ALL",
+            "DEBUG",
+            "ERROR",
+            "FATAL",
+            "INFO",
+            "OFF",
+            "TRACE",
+            "WARN",
+        ]:
             sc.setLogLevel(level)
         else:
             log.info(f"Error, Wrong Py4j Log level: {level} is passed")

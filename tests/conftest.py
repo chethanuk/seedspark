@@ -9,10 +9,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory, mkstemp
 from typing import Any, Dict, Generator, Optional
 
-from seedspark import __version__
-
 # Import Logger object
-from seedspark.log import log_instance as log
+from lognub.client import log_instance as log
+
+from seedspark import __version__
 
 # from pyspark.conf import SparkConf
 

@@ -130,12 +130,9 @@ def assert_compare_data_frames(
         )
 
     # compare the types
-    result_columns: List[Tuple[str, str]] = list(
-        map(lambda t: (t.name, t.dataType.typeName()), result_df.schema)
-    )
-    expected_columns: List[Tuple[str, str]] = list(
-        map(lambda t: (t.name, t.dataType.typeName()), expected_df.schema)
-    )
+    result_columns: List[Tuple[str, str]] = [(t.name, t.dataType.typeName()) for t in result_df.schema]
+    expected_columns: List[Tuple[str, str]] = [(t.name, t.dataType.typeName()) for t in expected_df.schema]
+
     number_of_mismatched_columns: int = 0
     mismatched_column_errors: List[str] = []
     for i in range(0, len(result_columns)):
@@ -301,7 +298,7 @@ def check_column_value(
                 f"Expected array in row:{row_num}, col:{column_num} to be {expected_value} "
                 f"but actual is {result_value}"
             ]
-        array_item: Row
+        # array_item: Row
         for array_item_index in range(0, len(result_value)):
             element_type: StructField = data_type_for_column.elementType
             result_array_item = result_value[array_item_index]

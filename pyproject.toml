@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "seedspark"
-version = "0.1.0"
-description = "Dump Spark Utlity for personal use"
+version = "0.1.5"
+description = "SeedSpark is an Extensible PySpark utility package to create production spark pipelines and dev-test them in dev environments"
 authors = ["ChethanUK <chethanuk@outlook.com>"]
 maintainers = ["ChethanUK <chethanuk@outlook.com>"]
 license = "Apache-2.0"
-readme = "README.MD"
+readme = "README.md"
 homepage = "https://github.com/ChethanUK/"
 repository = "https://github.com/ChethanUK/seedspark"
 documentation = "https://github.com/ChethanUK/seedspark#readme"
@@ -30,10 +30,13 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "License :: OSI Approved :: Apache Software License",
-    "Topic :: Software Development :: Data Engineering Assurance"
+    "Topic :: Software Development :: Testing"
 ]
 
 [tool.poetry.dependencies]

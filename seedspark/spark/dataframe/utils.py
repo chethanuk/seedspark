@@ -45,15 +45,13 @@ class DataFrameUtils:
 
             elif isinstance(field_data_type, StructType):
                 child_fieldnames = field_data_type.names
-                struct_field_names = list(
-                    map(lambda childname: f"{field_name}.{childname}", child_fieldnames)
-                )
+                struct_field_names = [f"{field_name}.{childname}" for childname in child_fieldnames]
                 new_field_names = (
                     list(filter(lambda col_name: col_name != field_name, field_names)) + struct_field_names
                 )
-                renamed_cols = map(lambda x: x.replace(".", "_"), new_field_names)
-                zip_alias_col_names = zip(new_field_names, renamed_cols)
-                alias_col_names = map(lambda y: col(y[0]).alias(y[1]), zip_alias_col_names)
+                renamed_cols = map(lambda x: x.replace(".", "_"), new_field_names)  # noqa: C417
+                zip_alias_col_names = zip(new_field_names, renamed_cols)  # noqa: B905
+                alias_col_names = map(lambda y: col(y[0]).alias(y[1]), zip_alias_col_names)  # noqa
                 struct_df = nested_df.select(*alias_col_names)
                 return DataFrameUtils.flatten_data_frame(struct_df)
 

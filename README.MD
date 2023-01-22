@@ -1,8 +1,6 @@
 # SeedSpark
 
-Dumb Spark Package
-
-NOTE: It's just curated stuff in this repo for personal usage.
+**SeedSpark** is an open-source is an Extensible PySpark utility package to create production spark pipelines and dev-test them in dev environments or to perform end to end tests. The goal is to enable rapid development of Spark pipelines via PySpark on Spark clusters and locally test the pipeline by using various utilities.
 
 ## TODO
 
@@ -26,7 +24,7 @@ See documentation on the [SDKMAN! website](https://sdkman.io).
 
 Open your favourite terminal and enter the following:
 
-```bash
+```shell
 $ curl -s https://get.sdkman.io | bash
 If the environment needs tweaking for SDKMAN to be installed,
 the installer will prompt you accordingly and ask you to restart.
@@ -40,11 +38,12 @@ Lastly, run the following code snippet to ensure that installation succeeded:
 $ sdk version
 ```
 
+
 ### Setup Java
 
 Install Java Now open favourite terminal and enter the following:
 
-```bash
+```shell
 List the AdoptOpenJDK OpenJDK versions
 $ sdk list java
 
@@ -93,3 +92,5 @@ Take a look at tests in `tests/dataquality` and `tests/jobs`
 $ poetry run pytest
 Ran 95 tests in 96.95s
 ```
+
+NOTE: It's just curated stuff in this repo for personal usage.

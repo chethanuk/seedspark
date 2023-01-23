@@ -60,7 +60,7 @@ repos:
         # override until resolved: https://github.com/psf/black/issues/402
         types: []
 
-  - repo: https://github.com/myint/autoflake
+  - repo: https://github.com/PyCQA/autoflake
     rev: v2.0.0
     hooks:
       - id: autoflake
@@ -72,7 +72,7 @@ repos:
           - --remove-duplicate-keys
           - --remove-unused-variables
 
-  - repo: https://github.com/timothycrosley/isort
+  - repo: https://github.com/PyCQA/isort
     rev: 5.11.4
     hooks:
       - id: isort

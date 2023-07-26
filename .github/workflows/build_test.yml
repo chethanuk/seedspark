@@ -7,7 +7,7 @@ on:
       - '!release*'
   pull_request:
     branches:
-      - master
+      - main
       - '!release*'
 jobs:
   build:
@@ -18,8 +18,8 @@ jobs:
       matrix:
         hadoop: [3.2]
         java: [11]
-        spark-version: [3.0.2]
-        python-version: [3.7, 3.8]
+        spark-version: [3.4.0]
+        python-version: [3.8, 3.9, 3.10]
         scala-version: [2.12]
     # Run on ubuntu
     runs-on: ubuntu-20.04

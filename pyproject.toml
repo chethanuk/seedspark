@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "seedspark"
-version = "0.3.0"
+version = "0.3.1"
 description = "SeedSpark is an Extensible PySpark utility package to create production spark pipelines and dev-test them in dev environments"
 authors = ["ChethanUK <chethanuk@outlook.com>"]
 maintainers = ["ChethanUK <chethanuk@outlook.com>"]

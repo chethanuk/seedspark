@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import copy
+from abc import ABC, abstractmethod
 from dataclasses import field
 from typing import Any, Dict, List, Tuple
 
@@ -10,7 +11,7 @@ from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 
 
-class SparkApps:
+class SparkApps(ABC):
     spark = None
     sc = None
 
@@ -42,19 +43,16 @@ class SparkApps:
 
         _base_spark_conf = (
             SparkConf()
-            .set("spark.ui.showConsoleProgress", "false")
             .set("spark.ui.enabled", "true")
             .set("spark.network.timeout", "1200000")
             .set("spark.rpc.numRetries", "20")
-            .set("spark.dynamicAllocation.enabled", "true")
             .set("spark.task.maxFailures", "100")
             .set("spark.cleaner.periodicGC.interval", "1min")
             .set("spark.unsafe.exceptionOnMemoryLeak", "true")
             .set("spark.sql.broadcastTimeout", "3600")  # SQL
-            .set("spark.sql.shuffle.partitions", "10")
+            .set("spark.dynamicAllocation.enabled", "true")
             .set("spark.sql.parquet.filterPushdown", "true")
             .set("spark.sql.parquet.recordLevelFilter.enabled", "true")
-            .set("spark.sql.session.timeZone", "Asia/Kolkata")
             .set("spark.sql.adaptive.enabled", "true")
             .set("spark.sql.optimizer.nestedSchemaPruning.enabled", "true")
             .set("spark.sql.optimizer.dynamicPartitionPruning", "true")
@@ -63,10 +61,10 @@ class SparkApps:
             .set("spark.sql.cbo.enabled", "true")
             .set("spark.sql.hive.metastorePartitionPruning", "true")
             .set("spark.sql.execution.arrow.pyspark.enabled", "true")  # Arrow
-            .set("spark.sql.execution.arrow.maxRecordsPerBatch", "50000")
-            .set("spark.sql.execution.arrow.pyspark.maxRecordsPerBatch", "50000")
             .set("spark.sql.execution.arrow.pyspark.fallback.enabled", "true")
             .set("spark.sql.execution.pandas.convertToArrowArraySafely", "true")
+            .set("spark.sql.execution.arrow.maxRecordsPerBatch", "50000")
+            .set("spark.sql.execution.arrow.pyspark.maxRecordsPerBatch", "50000")
         )
 
         return _base_spark_conf
@@ -172,9 +170,9 @@ class SparkApps:
         installed_packages_list = sorted([f"{i.key}=={i.version}" for i in pkg_resources.working_set])
         log.info(f"installed_packages_list: {installed_packages_list}")
 
-    # @abstractmethod
-    # def execute(self):
-    #     raise SparkAppsException("No Implementation has found for init()", NotImplementedError)
+    @abstractmethod
+    def execute(self):
+        raise SparkAppsException("No Implementation has found for execute()", NotImplementedError)
 
 
 class SparkAppsException(Exception):

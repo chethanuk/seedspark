@@ -116,7 +116,7 @@ jobs:
       # Install dependencies if cache does not exist
       - name: Install poetry dependencies if no cache hit
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry add --no-interaction pyspark==${{ matrix.spark-version }} && poetry install --no-interaction --no-root
+        run: poetry add --no-interaction pyspark==${{ matrix.spark-version }} && poetry install --no-interaction --no-root --all-extras
       - name: Install poetry dependencies if cache hit
         if: steps.cached-poetry-dependencies.outputs.cache-hit == 'true'
         run: poetry add --no-interaction pyspark==${{ matrix.spark-version }}
@@ -125,7 +125,7 @@ jobs:
         run: |
           echo "semver: ${{ github.event.inputs.bumpsemver }}"
           poetry version ${{ github.event.inputs.bumpsemver }}
-          poetry install --no-interaction
+          poetry install --no-interaction --all-extras
 
       - name: Check the information about packages.
         run: poetry show

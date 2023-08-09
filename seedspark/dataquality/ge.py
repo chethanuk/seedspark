@@ -2,9 +2,9 @@
 from enum import Enum
 from typing import Any, Dict
 
+from seedspark import SparkAppsException
 from seedspark.configs import configs
-from seedspark.spark import SparkAppsException
-from seedspark.utils import WriteJsonToFS
+from seedspark.utils.json import WriteJsonToFS
 
 
 class AnalyzerFormat(Enum):

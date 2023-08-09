@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 from lognub import log
 
-from seedspark.spark import SparkAppsException
+from seedspark import SparkAppsException
 
 
 def make_sure_path_exists(path):

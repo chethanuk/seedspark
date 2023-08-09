@@ -1,2 +1,6 @@
 # -*- coding: utf-8 -*-
-__version__ = "0.1.0"
+from seedspark.sparkapp import SparkApps, SparkAppsException
+
+__version__ = "0.3.2"
+
+__all__ = ["SparkAppsException", "SparkApps"]

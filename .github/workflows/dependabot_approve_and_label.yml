@@ -22,7 +22,7 @@ jobs:
       is_auto_release_candidate: ${{ steps.parse_dependabot_pr_autorelease.outputs.is_interesting_package }}
       semver_increment: ${{ steps.parse_dependabot_pr_automerge.outputs.semver_increment }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Read pr-autoflow configuration
         id: get_pr_autoflow_config
         uses: endjin/pr-autoflow/actions/read-configuration@v4

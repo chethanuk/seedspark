@@ -80,14 +80,14 @@ jobs:
       # load cached venv if cache exists
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       # load cached maven if cache m2 exists
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -95,7 +95,7 @@ jobs:
 
       # load cached maven if cache m2-com exists
       - name: Check Maven-com Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository/com
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}

@@ -82,7 +82,7 @@ repos:
         exclude: scala
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.0.0a4
+    rev: 3.0.0a5
     hooks:
       - id: sqlfluff-fix
         name: sqlfluff-fix
@@ -96,7 +96,7 @@ repos:
         additional_dependencies: []
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.0.0a4
+    rev: 3.0.0a5
     hooks:
       - id: sqlfluff-lint
         name: sqlfluff-lint

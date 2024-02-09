@@ -1,0 +1,5 @@
+[run]
+source =
+    seedspark
+omit=
+    .venv/

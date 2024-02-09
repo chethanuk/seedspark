@@ -1,0 +1,111 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+exclude: >
+  (?x)^(
+      .+/.venv/.+|
+      .+/dist/.+|
+      .+/.autovenv
+  )$
+fail_fast: true
+default_language_version:
+  python: python3
+default_stages:
+  - prepare-commit-msg
+  - commit
+  - push
+# ci:
+#   autofix_commit_msg: |
+#     [pre-commit.ci] auto fixes from pre-commit.com hooks
+#     for more information, see https://pre-commit.ci
+#   autofix_prs: true
+#   autoupdate_branch: ""
+#   autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+#   autoupdate_schedule: weekly
+#   skip: []
+#   submodules: false
+repos:
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.2.1'
+    hooks:
+      # - id: ruff
+      #   args: ["--fix", "--line-length", "119"]
+      - id: ruff-format
+        args: ["--line-length", "119"]
+
+  # Default Pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: check-yaml
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: detect-private-key
+    - id: destroyed-symlinks
+    - id: check-merge-conflict
+      stages:
+        - commit
+    - id: check-added-large-files
+      args: [--maxkb=1000]
+      stages:
+        - commit
+    - id: detect-aws-credentials
+      args:
+        - --allow-missing-credentials
+
+  # Black - Python code formatter
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+
+  # Autoflake - Removes unused imports and unused variables
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+      - id: autoflake
+        exclude: &fixtures tests/functional/|tests/input|tests/extensions/data|tests/regrtest_data/|tests/data/
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --expand-star-imports
+          - --remove-duplicate-keys
+          - --remove-unused-variables
+          - --expand-star-imports
+          - --ignore-init-module-imports
+
+
+  # Isort - Python import sorter
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+        # args: ["--profile", "black", "--filter-files"]
+        files: \.pyi?$
+        exclude: .github/
+
+  # # Flake8 - Python linter
+  # - repo: https://github.com/pycqa/flake8
+  #   rev: 7.0.0
+  #   hooks:
+  #   -   id: flake8
+  #       # W191 - indentation contains tabs
+  #       # E101 - indentation contains mixed spaces and tabs
+  #       # E722 - do not use bare except TODO: Need to remove this
+  #       args: ["--ignore=E501,E266,E203,W503,W191,E101,E722"]
+  #       additional_dependencies:
+  #         # Finding likely bugs and design problems in your program.
+  #         - flake8-bugbear
+  #         # Check for python builtins being used as variables or parameters.
+  #         - flake8-builtins
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.7
+    hooks:
+      - id: bandit
+        args: ["-ll", "-r", "airflow1x"]
+        files: .py$
+        exclude: tests/conftest.py

@@ -21,4 +21,4 @@ class TestSparkApplication(BaseSparkTest):
 
     def test_some_spark_operation(self, spark_test_fixture) -> None:
         df = spark_test_fixture.createDataFrame([(1, "foo"), (2, "bar")], ["id", "value"])
-        assert df.count() == 2  # noqa: PLR2004
+        assert df.count() == 2

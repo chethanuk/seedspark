@@ -3,6 +3,8 @@
 .pre-commit-hooks.yaml
 .hypothesis
 
+.ruff_cache
+
 # documentation not needed
 CHANGELOG.md
 LICENSE

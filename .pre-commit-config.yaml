@@ -116,3 +116,15 @@ repos:
       - id: pyproject-fmt
         # https://pyproject-fmt.readthedocs.io/en/latest/#calculating-max-supported-python-version
         additional_dependencies: ["tox>=4.9"]
+
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.11.0
+    hooks:
+    - id: pretty-format-yaml
+      args: [--autofix, --indent, '2']
+      exclude: .pre-commit-config.yaml
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.34.0
+    hooks:
+    - id: yamllint

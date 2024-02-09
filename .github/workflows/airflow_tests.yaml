@@ -1,0 +1,51 @@
+name: Airflow Tests
+
+on:
+  push:
+    branches:
+    - main
+    - '!release*'
+    paths:
+    - airflowdags/*
+  pull_request:
+    branches:
+    - main
+    - '!release*'
+    paths:
+    - airflowdags/*
+env:
+  DAG_FOLDER: dags/
+  WORKDIR: airflowdags
+jobs:
+  linting:
+    name: 'Run PreComitChecks: ruff, black etc..'
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10']
+        os: [ubuntu-20.04]       # , "macos-latest"
+    runs-on: ubuntu-latest
+    steps:
+    #----------------------------------------------
+    # Checkout, SetUp Python, Load Cache and Lint
+    #----------------------------------------------
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # Install Astro CLI
+    - name: Install Astro CLI
+      run: |
+        curl -sSL https://install.astronomer.io | sudo bash -s
+
+    # Parse - Spins up a local PyEnv and checks your DAGs for syntax and import errors.
+    - name: Parse the Astro Dags
+      run: |
+        astro dev parse --verbosity info
+    # Run pytests against DAGs.
+    - name: Parse the Astro Dags
+      run: |
+        astro dev pytest --verbosity info

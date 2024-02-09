@@ -3,36 +3,36 @@ name: PreCommitChecks
 on:
   push:
     branches:
-      - master
-      - '!release*'
+    - main
+    - '!release*'
   pull_request:
     branches:
-      - master
-      - '!release*'
+    - main
+    - '!release*'
 jobs:
   linting:
-    name: "Run checks: black, flake8, isort, bandit etc.."
+    name: 'Run PreComitChecks: ruff, black etc..'
     strategy:
-        fail-fast: false
-        matrix:
-          python-version: ["3.10"]
-          os: [ "ubuntu-20.04"]  # , "macos-latest"
+      fail-fast: false
+      matrix:
+        python-version: ['3.10']
+        os: [ubuntu-20.04]       # , "macos-latest"
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
       # Checkout, SetUp Python, Load Cache and Lint
       #----------------------------------------------
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
       # Install Python
-      - uses: actions/setup-python@v3
-        with:
-            python-version: 3.8
+    - uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Check Python ${{ matrix.python-version }} version
-        run: python -V
+    - name: Check Python ${{ matrix.python-version }} version
+      run: python -V
 
     #   # Setup Python Poetry
     #   - name: Install Poetry
@@ -56,6 +56,6 @@ jobs:
     #         key: ${{ runner.os }}-pip
     #         restore-keys: ${{ runner.os }}-pip
 
-      - uses: pre-commit/action@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: pre-commit/action@v3.0.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}

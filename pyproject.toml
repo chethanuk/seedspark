@@ -47,8 +47,10 @@ ruff = "^0.2.1"
 black = "^24.1.1"
 
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
 
 [tool.ruff]
 select = ["ALL"]
@@ -84,18 +86,20 @@ unfixable = ["B"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402", "ERA001", "PLR2004"]
 
 [tool.ruff.per-file-ignores]
 # Ignore `E402` (import violations) in all `__init__.py` files, and in select subdirectories.
 "__init__.py" = ["E402"]
 "tests/__init__.py" = ["F403"]
-"**/{tests,docs,tools}/*" = ["E402", "ERA001"]
+"**/{tests,docs,tools}/*" = ["E402", "ERA001", "PLR2004"]
 
 [tool.ruff.format]
 docstring-code-format = true
 
 
 ## Black
+
 [tool.black]
 # https://github.com/psf/black
 line-length = 120
@@ -141,7 +145,7 @@ skip_glob = ['__init__.py']
 [tool.pytest.ini_options]
 # testpaths = "tests"
 minversion = "2.0"
-timeout = 300
+# timeout = 300
 addopts = "-rfEX -p pytester --strict-markers"
 python_files = ["*test_*.py", "*_test.py",]
 norecursedirs = [

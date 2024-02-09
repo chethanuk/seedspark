@@ -1,0 +1,34 @@
+name: PreCommitChecks
+
+on:
+  push:
+    branches:
+    - main
+    - '!release*'
+    paths:
+    - '!*tests/'
+  pull_request:
+    branches:
+    - main
+    - '!release*'
+
+  workflow_dispatch:
+
+
+jobs:
+  # TruffleHog OSS is a tool that searches through git repositories for high entropy strings,
+  # digging deep into commit history and branches. It's effective at finding secrets accidentally committed.
+  TruffleHog:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: TruffleHog OSS
+      uses: trufflesecurity/trufflehog@v3.33.0
+      with:
+        path: ./
+        base: ${{ github.event.repository.default_branch }}
+        head: HEAD
+        extra_args: --exclude_paths infra/athena-connectors/athena-postgresql/athena-postgresql.yaml

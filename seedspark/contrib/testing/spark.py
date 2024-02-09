@@ -26,7 +26,7 @@ class BaseSparkTest:
         return self._spark
 
     @classmethod
-    def teardown_class(cls):
+    def teardown_class(cls) -> None:
         """Class-level teardown to stop the Spark session."""
         if cls._spark:
             cls._spark.stop()
@@ -45,12 +45,12 @@ class BaseSparkTest:
         )
 
     @staticmethod
-    def quiet_py4j(sc):
+    def quiet_py4j(sc) -> None:
         """Reduces the log level of Spark's py4j to minimize noise during testing."""
         logging.getLogger("py4j").setLevel(logging.ERROR)
         sc.setLogLevel("ERROR")
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture()
     def spark_test_fixture(self):
         """Function-level fixture to manage temporary directories for each test."""
         temp_dir = tempfile.TemporaryDirectory()

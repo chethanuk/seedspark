@@ -9,7 +9,7 @@ from seedspark.configs.clickhouse import (
 class ConfigFactory:
     """A factory class for generating configurations based on environment."""
 
-    def __init__(self, env_name: str):
+    def __init__(self, env_name: str) -> None:
         """Initialize ConfigFactory with environment name.
 
         Parameters
@@ -37,7 +37,7 @@ class ConfigFactory:
                     "ci": CIClickHouseConfig,
                     "staging": StagingClickHouseConfig,
                     "prod": ProdClickHouseConfig,
-                }
+                },
             )
         return self._clickhouse_config
 
@@ -59,5 +59,6 @@ class ConfigFactory:
         """
         config_class = config_classes.get(self._env_name)
         if not config_class:
-            raise ValueError(f"Unknown environment: {self._env_name}")
+            msg = f"Unknown environment: {self._env_name}"
+            raise ValueError(msg)
         return config_class()

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class BaseClickHouseConfig:
     """Base configuration for ClickHouse with default settings.
-    Attributes are set using properties with fallbacks to default values
+    Attributes are set using properties with fallbacks to default values.
 
     Attributes
     ----------

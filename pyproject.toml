@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "seedspark"
-version = "0.1.0"
+version = "0.3.1"
 description = ""
 authors = ["ChethanUK <chethanuk@outlook.com>"]
 readme = "README.md"
@@ -43,15 +43,62 @@ pytest-describe = "^2.1.0"
 
 [tool.poetry.group.linting.dependencies]
 pre-commit = "^3.6.0"
+ruff = "^0.2.1"
+black = "^24.1.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.ruff]
+select = ["ALL"]
+line-length = 120
+ignore = [
+    "D100",
+    ]
+extend-exclude = ["docs"]  # "tests",
+
+[tool.ruff.lint]
+select = [
+  "B",  # flake8-bugbear
+  "C",  # flake8-comprehensions
+  # "D",  # pydocstyle
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "PLE", # pylint error
+  "PYI", # flake8-pyi
+  "PLR", # pylint refactor
+  "PLW", # pylint warning
+  "RUF", # ruff
+  "W",  # pycodestyle warnings
+  "UP", # pyupgrade
+]
+
+# 2. Avoid enforcing line-length violations (`E501`)
+ignore = ["E501"]
+
+# 3. Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+
+[tool.ruff.per-file-ignores]
+# Ignore `E402` (import violations) in all `__init__.py` files, and in select subdirectories.
+"__init__.py" = ["E402"]
+"tests/__init__.py" = ["F403"]
+"**/{tests,docs,tools}/*" = ["E402", "ERA001"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+
 ## Black
 [tool.black]
 # https://github.com/psf/black
-line-length = 119
+line-length = 120
 multi_line_output = 3
 include_trailing_comma = true
 force_grid_wrap = 0
@@ -76,7 +123,7 @@ exclude = '''
 # https://github.com/timothycrosley/isort
 # https://github.com/timothycrosley/isort/wiki/isort-Settings
 profile = "black"
-line_length = 119
+line_length = 120
 indent = '    '
 multi_line_output = 3
 include_trailing_comma = true
@@ -91,20 +138,34 @@ skip_glob = ['__init__.py']
 # python_version = 3.8
 # #warn_return_any = True
 
-# [pytest]
+[tool.pytest.ini_options]
 # testpaths = "tests"
-# norecursedirs = ".git .* *.egg* old docs dist build *.venv docs/_build *.egg .tox"
-# cache_dir = "./.pytest_cache"
-# python_files = "*test_*.py"
-# timeout = 300
+minversion = "2.0"
+timeout = 300
+addopts = "-rfEX -p pytester --strict-markers"
+python_files = ["*test_*.py", "*_test.py",]
+norecursedirs = [
+  "testing/example_scripts",
+  ".*",
+  "build",
+  "dist",
+]
+xfail_strict = true
+filterwarnings = [
+    "error",
+    "default:Using or importing the ABCs:DeprecationWarning:unittest2.*"
+]
 
-[tool.ruff]
-select = ["ALL"]
-line-length = 150
-ignore = [
-    "D100",
-    ]
-extend-exclude = ["docs"]  # "tests",
-
-[tool.ruff.per-file-ignores]
-"tests/__init__.py" = ["F403"]
+[tool.mypy]
+mypy_path = ["seedspark"]
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+no_implicit_reexport = true

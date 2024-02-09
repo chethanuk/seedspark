@@ -16,9 +16,9 @@ from seedspark.contrib.testing.spark import BaseSparkTest
 
 # Example test case using the BaseSparkTest
 class TestSparkApplication(BaseSparkTest):
-    def test_spark_context(self, spark_test_fixture):
+    def test_spark_context(self, spark_test_fixture) -> None:
         assert spark_test_fixture.sparkContext is not None
 
-    def test_some_spark_operation(self, spark_test_fixture):
+    def test_some_spark_operation(self, spark_test_fixture) -> None:
         df = spark_test_fixture.createDataFrame([(1, "foo"), (2, "bar")], ["id", "value"])
-        assert df.count() == 2
+        assert df.count() == 2  # noqa: PLR2004

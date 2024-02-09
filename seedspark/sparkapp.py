@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import subprocess
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, NoReturn, Optional
 
 import pkg_resources
 from loguru import logger as log
@@ -39,10 +39,10 @@ class SparkApps(ABC):
     def __init__(
         self,
         app_name: str,
-        extra_configs: Dict[str, Any] = None,
-        spark_master: str = None,
+        extra_configs: Optional[Dict[str, Any]] = None,
+        spark_master: Optional[str] = None,
         log_env: bool = True,
-    ):
+    ) -> None:
         self.app_name = app_name
         self.extra_configs = extra_configs or {}
         self.spark_master = spark_master
@@ -97,21 +97,21 @@ class SparkApps(ABC):
             self._initialize_spark_session()
         return self._sc
 
-    def _initialize_spark_session(self):
+    def _initialize_spark_session(self) -> None:
         """Initializes the SparkSession and SparkContext."""
         spark_conf = self.spark_conf
         self._spark = SparkSession.builder.config(conf=spark_conf).getOrCreate()
         self._sc = self._spark.sparkContext
         log.info(f"Spark Session Initialized: {self._spark} with version: {self._sc.version}")
 
-    def _set_adaptive_configs(self, spark_conf: SparkConf):
+    def _set_adaptive_configs(self, spark_conf: SparkConf) -> None:
         """Sets adaptive query execution configurations if enabled."""
         if self.extra_configs.get("enableAdaptiveQueryExecution", False):
             spark_conf.set("spark.sql.adaptive.enabled", "true")
             spark_conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")
             spark_conf.set("spark.sql.adaptive.skewJoin.enabled", "true")
 
-    def stop_spark_session(self):
+    def stop_spark_session(self) -> None:
         """Stops the Spark session if initialized."""
         if self._spark:
             log.info("Stopping spark application")
@@ -121,7 +121,7 @@ class SparkApps(ABC):
             log.info("Spark session not initialized")
 
     @staticmethod
-    def log_sys_env():
+    def log_sys_env() -> None:
         """Logs the Java version and installed Python packages."""
         try:
             java_version = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT).decode()
@@ -132,7 +132,7 @@ class SparkApps(ABC):
         log.info(f"Installed packages: {installed_packages_list}")
 
     @abstractmethod
-    def execute(self):
+    def execute(self) -> NoReturn:
         """Abstract method to be implemented by subclasses.
 
         Raises
@@ -141,4 +141,5 @@ class SparkApps(ABC):
             If the subclass does not implement this method.
 
         """
-        raise NotImplementedError("execute method must be implemented")
+        msg = "execute method must be implemented"
+        raise NotImplementedError(msg)

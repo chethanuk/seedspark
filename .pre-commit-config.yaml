@@ -28,8 +28,8 @@ repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: 'v0.2.1'
     hooks:
-      # - id: ruff
-      #   args: ["--fix", "--line-length", "119"]
+      - id: ruff
+        args: ["--fix", "--line-length", "119"]
       - id: ruff-format
         args: ["--line-length", "119"]
 
@@ -109,3 +109,10 @@ repos:
         args: ["-ll", "-r", "airflow1x"]
         files: .py$
         exclude: tests/conftest.py
+
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: "1.7.0"
+    hooks:
+      - id: pyproject-fmt
+        # https://pyproject-fmt.readthedocs.io/en/latest/#calculating-max-supported-python-version
+        additional_dependencies: ["tox>=4.9"]

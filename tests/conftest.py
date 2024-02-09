@@ -13,3 +13,4 @@ def project_root() -> Path:
 def pytest_assertrepr_compare(config, op, left, right):
     if op in ("==", "!="):
         return [f"{pprint.pformat(left, width=999)} {op} {pprint.pformat(right, width=999)}"]
+    return None

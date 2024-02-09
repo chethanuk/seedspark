@@ -1,11 +1,13 @@
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
+from seedspark import sparkapp
+from seedspark.configs.configs import ConfigFactory
+
+if TYPE_CHECKING:
+    from seedspark.configs.clickhouse import BaseClickHouseConfig
 
 
-class SparkApps:
-    """Base class - assuming this is already implemented."""
-
-
-class SparkDeltaClickhouseApp(SparkApps):
+class SparkDeltaClickhouseApp(sparkapp):
     """A high-level Spark application class for integrating Delta Lake and ClickHouse.
 
     Parameters
@@ -32,7 +34,7 @@ class SparkDeltaClickhouseApp(SparkApps):
 
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         app_name: str,
         delta_version: str,
@@ -41,36 +43,18 @@ class SparkDeltaClickhouseApp(SparkApps):
         extra_configs: Optional[Dict[str, Any]] = None,
         spark_master: Optional[str] = None,
         log_env: bool = True,
-    ):
+        scala_version: str = "2.12",
+    ) -> None:
         super().__init__(app_name, extra_configs, spark_master, log_env)
         self.delta_version = delta_version
-        self.clickhouse_config = self._get_clickhouse_config(environment)
+        self.configs = ConfigFactory(environment)
+        self.clickhouse_config: BaseClickHouseConfig = self.configs.clickhouse
         self.extra_packages = extra_packages
+        self.scala_version = scala_version
         self._apply_clickhouse_config()
+        self.extra_configs.update({"spark.jars.packages", self._build_delta_packages()})
 
-    def _get_clickhouse_config(self, environment: str) -> BaseClickHouseConfig:
-        """Returns the ClickHouse configuration based on the specified environment.
-
-        Parameters
-        ----------
-        environment : str
-            The environment for which to configure ClickHouse.
-
-        Returns
-        -------
-        BaseClickHouseConfig
-            The ClickHouse configuration object for the specified environment.
-
-        """
-        config_map = {
-            "local": LocalClickHouseConfig,
-            "ci": CIClickHouseConfig,
-            "staging": StagingClickHouseConfig,
-            "prod": ProdClickHouseConfig,
-        }
-        return config_map.get(environment, BaseClickHouseConfig)()
-
-    def _apply_clickhouse_config(self):
+    def _apply_clickhouse_config(self) -> None:
         """Applies the ClickHouse configuration to the Spark session's configurations."""
         self.extra_configs.update(
             {
@@ -81,7 +65,18 @@ class SparkDeltaClickhouseApp(SparkApps):
                 "spark.sql.catalog.clickhouse.user": self.clickhouse_config.user,
                 "spark.sql.catalog.clickhouse.password": self.clickhouse_config.password,
                 "spark.sql.catalog.clickhouse.database": self.clickhouse_config.database,
-            }
+            },
         )
 
-    # Remaining methods like spark_conf, execute, etc., from the previous class definition.
+    def _build_delta_packages(self) -> str:
+        """Constructs the Maven artifact string for Delta Lake.
+
+        Returns
+        -------
+        str
+            A string representing Maven artifacts for Delta Lake.
+
+        """
+        delta_maven_artifact = f"io.delta:delta-spark_{self.scala_version}:{self.delta_version}"
+        all_artifacts = [delta_maven_artifact] + (self.extra_packages if self.extra_packages else [])
+        return ",".join(all_artifacts)

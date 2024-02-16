@@ -1,11 +1,12 @@
 from seedspark.contrib.testing.spark import BaseSparkTest
+from seedspark.examples.clichouse_taxi import WeekendMetrics
 
 
-# Clickhouse test case using the BaseSparkTest
+# Example test case using the BaseSparkTest
 class TestSparkApplication(BaseSparkTest):
     def test_spark_context(self, sparkSession) -> None:
         assert sparkSession.sparkContext is not None
 
     def test_some_spark_operation(self, sparkSession) -> None:
-        df = sparkSession.createDataFrame([(1, "foo"), (2, "bar")], ["id", "value"])
-        assert df.count() == 2
+        weekendApp = WeekendMetrics(app_name="weekend_taxi_pipeline", delta_version="3.1.0")
+        weekendApp.execute()

@@ -51,7 +51,7 @@ class BaseSparkTest:
         sc.setLogLevel("ERROR")
 
     @pytest.fixture()
-    def spark_test_fixture(self):
+    def sparkSession(self):
         """Function-level fixture to manage temporary directories for each test."""
         temp_dir = tempfile.TemporaryDirectory()
         self.test_path = Path(temp_dir.name)

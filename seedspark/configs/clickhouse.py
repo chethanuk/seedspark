@@ -29,15 +29,16 @@ class BaseClickHouseConfig:
 
     @property
     def host(self) -> str:
-        return self.get_conf("CLICKHOUSE_HOST", "127.0.0.1")
+        #
+        return self.get_conf("CLICKHOUSE_HOST", "github.demo.altinity.cloud")
 
     @property
     def protocol(self) -> str:
-        return self.get_conf("CLICKHOUSE_PROTOCOL", "http")
+        return self.get_conf("CLICKHOUSE_PROTOCOL", "https")
 
     @property
     def http_port(self) -> int:
-        return int(self.get_conf("CLICKHOUSE_PORT", "8123"))
+        return int(self.get_conf("CLICKHOUSE_JDBC_PORT", "8443"))
 
     @property
     def user(self) -> str:
@@ -53,7 +54,7 @@ class BaseClickHouseConfig:
 
     @property
     def ssl(self) -> bool:
-        return False
+        return True
 
 
 class LocalClickHouseConfig(BaseClickHouseConfig):

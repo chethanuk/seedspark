@@ -1,3 +1,7 @@
+# Spark Jars
+*.jar
+jars/*
+
 # project build medadata that can't be used in docker
 .appveyor.yml
 .pre-commit-hooks.yaml

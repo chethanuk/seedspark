@@ -6,6 +6,9 @@ from pendulum import datetime
 
 def task_failure_alert(context):
     print(f"Task has failed, task_instance_key_str: {context['task_instance_key_str']}")
+    # Send Slack
+
+    # send Event to Datadog
 
 
 # When using the DAG decorator, The "dag_id" value defaults to the name of the function
@@ -13,10 +16,10 @@ def task_failure_alert(context):
 @dag(
     # This defines how often your DAG will run, or the schedule by which your DAG runs. In this case, this DAG
     # will run daily
-    schedule="@daily",
+    schedule="@hourly",
     # This DAG is set to run for the first time on January 1, 2023. Best practice is to use a static
     # start_date. Subsequent DAG runs are instantiated based on the schedule
-    start_date=datetime(2023, 1, 1),
+    start_date=datetime(2024, 2, 9),
     # When catchup=False, your DAG will only run the latest run that would have been scheduled. In this case, this means
     # that tasks will not be run between January 1, 2023 and 30 mins ago. When turned on, this DAG's first
     # run will be for the next 30 mins, per the its schedule
@@ -26,6 +29,7 @@ def task_failure_alert(context):
         "owner": "chethanuk",
     },
     tags=["example"],
+    # When failure - trigger alert
     on_failure_callback=task_failure_alert,
 )  # If set, this tag is shown in the DAG view of the Airflow UI
 def example_dag_basic():
@@ -64,7 +68,12 @@ def example_dag_basic():
 
         return {"total_order_value": total_order_value}
 
-    @task()
+    # Docker container and ECR Container or K8s pod
+    # Spark
+    # Task - shared worker
+    # 10GB - OOM -> K8s Operator -> namespace airflow -> Pod -> Delete
+    # 100+ -> Spark
+    # @k8sPodOperator()
     def load(total_order_value: float):
         """
         #### Load task
@@ -77,6 +86,8 @@ def example_dag_basic():
     order_data = extract()
     order_summary = transform(order_data)
     load(order_summary["total_order_value"])
+
+    # order_data >> order_summary >> load
 
 
 example_dag_basic()

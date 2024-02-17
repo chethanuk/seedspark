@@ -1,6 +1,27 @@
 # Spark Jars
 *.jar
 jars/*
+spark-warehouse
+
+# Spark
+conf/java-opts
+conf/slaves
+dependency-reduced-pom.xml
+derby.log
+
+build/*.jar
+build/apache-maven*
+build/scala*
+cache
+checkpoint
+
+# For Hive
+TempStatsStore/
+metastore/
+metastore_db/
+sql/hive-thriftserver/test_warehouses
+warehouse/
+spark-warehouse/
 
 # project build medadata that can't be used in docker
 .appveyor.yml

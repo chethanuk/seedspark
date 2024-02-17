@@ -86,3 +86,14 @@ fdVWHGGDfRzS2J3tjr2GCA
 curl --create-dirs -o $HOME/.postgresql/root.crt 'https://cockroachlabs.cloud/clusters/df3114a9-8f79-4189-8784-76e34089b984/cert'
 
 postgresql://demo:fdVWHGGDfRzS2J3tjr2GCA@demoteddy-5340.6zw.aws-eu-west-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full
+
+- Read Clickhouse SQL
+- Transform the data frame to camel case
+- Write to Delta Lake
+
+Prepare Docker container
+Push to docker hub and run via local k8s
+
+Airflow:
+- Run Spark via Airflow K8s Operator
+- Run the Data Quality checks using Sods SQL

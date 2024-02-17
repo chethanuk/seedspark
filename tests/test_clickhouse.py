@@ -8,5 +8,5 @@ class TestSparkApplication(BaseSparkTest):
         assert sparkSession.sparkContext is not None
 
     def test_some_spark_operation(self, sparkSession) -> None:
-        weekendApp = WeekendMetrics(app_name="weekend_taxi_pipeline", delta_version="3.1.0")
+        weekendApp = WeekendMetrics(app_name="weekend_taxi_pipeline")
         weekendApp.execute()

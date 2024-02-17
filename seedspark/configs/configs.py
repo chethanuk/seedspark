@@ -34,6 +34,7 @@ class ConfigFactory:
             self._clickhouse_config = self._get_config(
                 {
                     "local": LocalClickHouseConfig,
+                    "dev": LocalClickHouseConfig,
                     "ci": CIClickHouseConfig,
                     "staging": StagingClickHouseConfig,
                     "prod": ProdClickHouseConfig,

@@ -14,13 +14,13 @@ pyspark = {extras = ["connect", "sql"], version = "^3.5.0"}
 sqlglot = "^20.11.0"
 loguru = "^0.7.2"
 onetl = "^0.10.1"
+delta-spark = "3.1.0"
+requests = "^2.31.0"
 
 
 ###########################################################################
 #                         DEPENDENCY GROUPS
 ###########################################################################
-delta-spark = "3.1.0"
-
 [tool.poetry.group.development]
 optional = true
 

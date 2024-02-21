@@ -23,7 +23,9 @@ class WeekendMetrics:
 
 
 def run_snapshot_example():
-    clickhouse_app = SparkDeltaClickhouseApp(app_name="weekend_taxi_snapshot_read", environment="local")
+    clickhouse_app = SparkDeltaClickhouseApp(
+        app_name="weekend_taxi_snapshot_read", environment="local", extra_packages=["org.xerial:sqlite-jdbc:3.45.1.0"]
+    )
     table = f"{clickhouse_app.clickhouse_db}.airports"
     print(f"Reading table: {table}")
     reader = DBReader(
@@ -40,6 +42,14 @@ def run_snapshot_example():
         print(f"Fetching all rows with SnapshotStrategy for reader: {reader}")
         df = reader.run()
         df.show(2)
+
+        # JDBC URL for SQLite
+        jdbc_url = "jdbc:sqlite:airports_database.db"
+
+        # Write to SQLite using JDBC
+        df.write.format("jdbc").option("url", jdbc_url).option("dbtable", "airports").option(
+            "driver", "org.sqlite.JDBC"
+        ).mode("overwrite").save()
 
     # with IncrementalStrategy():
     #     df = reader.run()

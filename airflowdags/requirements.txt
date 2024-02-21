@@ -1,1 +1,7 @@
 # Astro Runtime includes the following pre-installed providers packages: https://docs.astronomer.io/astro/runtime-image-architecture#provider-packages
+--constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.8.1/constraints-3.10.txt"
+# ibis-framework[clickhouse,duckdb,deltalake]
+# connectorx==0.3.2
+# clickhousepy==2021.3.10
+clickhouse-connect==0.7.0
+astro-sdk-python[openlineage,duckdb]

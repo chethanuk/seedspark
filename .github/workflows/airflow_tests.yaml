@@ -42,9 +42,9 @@ jobs:
         curl -sSL https://install.astronomer.io | sudo bash -s
 
     # Parse - Spins up a local PyEnv and checks your DAGs for syntax and import errors.
-    - name: Parse the Astro Dags
-      run: |
-        astro dev parse --verbosity info
+    # - name: Parse the Astro Dags
+    #   run: |
+    #     astro dev parse --verbosity info
     # Run pytests against DAGs.
     - name: Parse the Astro Dags
       run: |

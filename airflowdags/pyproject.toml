@@ -1,0 +1,24 @@
+[tool.pytest.ini_options]
+# testpaths = "tests"
+minversion = "2.0"
+# timeout = 300
+addopts = "-rfEX -p pytester --strict-markers"
+python_files = ["*test_*.py", "*_test.py",]
+norecursedirs = [
+  "testing/example_scripts",
+  ".*",
+  "build",
+  "dist",
+]
+xfail_strict = true
+filterwarnings = [
+    "error",
+    "default:Using or importing the ABCs:DeprecationWarning:unittest2.*"
+]
+pythonpath = [
+    "dags",
+    "plugins"
+]
+testpaths = [
+    "tests"
+]

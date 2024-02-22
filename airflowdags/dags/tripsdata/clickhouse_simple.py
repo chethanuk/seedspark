@@ -45,7 +45,7 @@ def clickhouse_simple_elt():
 
     @task()
     def extract_load_sqlite():
-        from utils.airports_etl import ClickhouseToSQLitePipeline
+        from utils.airports_elt import ClickhouseToSQLitePipeline
 
         pipeline = ClickhouseToSQLitePipeline()
         return pipeline.run()

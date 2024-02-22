@@ -7,6 +7,6 @@ clickhouse-connect==0.7.0
 astro-sdk-python[openlineage,duckdb]
 deltalake==0.15.1
 duckdb==0.9.2
-sqlglot==21.2.0
+sqlglot[rs]==21.2.0
 # soda-core-scientific==3.1
 # soda-core-pandas-dask==3.1

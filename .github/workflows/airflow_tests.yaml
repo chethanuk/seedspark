@@ -45,7 +45,16 @@ jobs:
     # - name: Parse the Astro Dags
     #   run: |
     #     astro dev parse --verbosity info
-    # Run pytests against DAGs.
+
     - name: Parse the Astro Dags
       run: |
         astro dev pytest --verbosity info
+
+    - name: Run Airflow Tests
+      run: |
+        export AIRFLOW_HOME=`pwd`
+        pip install -r requirements.txt
+        pip install -r dev-requirements.txt
+
+        # Run the tests
+        pytest tests/ -vv -p no:warnings -s --full-trace

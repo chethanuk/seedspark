@@ -9,4 +9,5 @@ class TestSparkApplication(BaseSparkTest):
 
     def test_some_spark_operation(self, sparkSession) -> None:
         weekendApp = WeekendMetrics(app_name="weekend_taxi_pipeline")
-        weekendApp.execute()
+        df = weekendApp.execute()
+        assert df.count() > 2

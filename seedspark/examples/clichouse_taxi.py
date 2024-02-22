@@ -1,4 +1,3 @@
-from onetl.db import DBReader
 from onetl.strategy import SnapshotStrategy
 
 from seedspark.apps import SparkDeltaClickhouseApp
@@ -19,10 +18,12 @@ class WeekendMetrics:
         # Example SQL query
         query = "SELECT AirportID, Name, City, Country, Timezone FROM airports"
         print(self.clickhouse_app.clickhouse)
-        self.clickhouse_app.execute(query)
+        return self.clickhouse_app.execute(query)
 
 
 def run_snapshot_example():
+    from onetl.db import DBReader
+
     clickhouse_app = SparkDeltaClickhouseApp(
         app_name="weekend_taxi_snapshot_read", environment="local", extra_packages=["org.xerial:sqlite-jdbc:3.45.1.0"]
     )

@@ -3,7 +3,6 @@ from functools import cached_property
 from typing import Any, Dict, List, Optional
 
 from loguru import logger as log
-from onetl.db import DBReader
 
 from seedspark.configs import BaseClickHouseConfig, ConfigFactory
 from seedspark.connections import ClickHouse
@@ -128,7 +127,9 @@ class SparkDeltaClickhouseApp(SparkApps):
 
     @cached_property
     @log_exceptions
-    def clickhouse_reader(self, table, columns, partition_col) -> DBReader:
+    def clickhouse_reader(self, table, columns, partition_col):
+        from onetl.db import DBReader
+
         return DBReader(
             connection=self.clickhouse,
             source=table,
@@ -158,8 +159,9 @@ class SparkDeltaClickhouseApp(SparkApps):
     @spark_session_management
     @connection_check
     def execute(self, query: str) -> Any:
+        log.info(f"Executing query in Clickhouse DB: {query}")
         df = self.clickhouse.sql(query)
-        df.printSchema()
+        log.info(f"Schema of clickhouse dataframe: {df.schema}")
         df.show(5)
         return df
 

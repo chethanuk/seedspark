@@ -5,7 +5,7 @@ from datetime import datetime
 
 from airflow.decorators import dag, task
 from airflow.operators.python import is_venv_installed
-from utils.airports_etl import ClickhouseToSQLitePipeline
+from utils.airports_elt import ClickhouseToSQLitePipeline
 
 log = logging.getLogger(__name__)
 

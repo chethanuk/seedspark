@@ -2,6 +2,8 @@
 *.jar
 jars/*
 spark-warehouse
+tmp
+jars
 
 # Spark
 conf/java-opts

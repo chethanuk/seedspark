@@ -5,6 +5,7 @@ standalone_admin_password.txt
 temp_*.db
 logs
 .log
+logs
 
 #
 .git

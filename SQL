@@ -1,72 +1,4 @@
--- **Pre-calculating Weekend Trip Data**
-
-WITH weekend_data AS (
-    SELECT
-        -- Extracting Day of Week (6 for Saturday, 7 for Sunday)
-        toDayOfWeek(pickup_datetime) AS day_of_week,
-
-        -- Formatting Year and Month as a Single String
-        formatDateTime(pickup_datetime, '%Y-%m') AS year_month,
-
-        -- Counting Total Weekend Trips
-        COUNT(*) AS total_trips,
-
-        -- Average Trips per Day (Total Trips / Unique Days)
-        ROUND(COUNT(*) / COUNT(DISTINCT toDate(pickup_datetime)), 1) AS avg_trips_per_day,
-
-        -- Average Fare per Trip (Rounded to One Decimal)
-        ROUND(AVG(fare_amount), 1) AS avg_fare_per_trip,
-
-        -- Average Trip Duration in Minutes (Rounded to One Decimal)
-        ROUND(AVG(dateDiff('minute', pickup_datetime, dropoff_datetime)), 1) AS avg_trip_duration
-
-    FROM
-        tripdata
-
-    WHERE
-        -- Filtering Date Range (2014-01-01 to 2016-12-31)
-        toDate(pickup_datetime) BETWEEN '2014-01-01' AND '2016-12-31'
-        -- Including Weekends Only (Saturday and Sunday)
-        AND toDayOfWeek(pickup_datetime) IN (6, 7)
-
-    GROUP BY
-        day_of_week, year_month
-)
-
--- **Selecting and Formatting Final Output**
-
-SELECT
-    -- Year-Month Combination
-    wd_saturday.year_month,
-
-    -- Saturday Metrics
-    wd_saturday.avg_trips_per_day AS sat_avg_trip_count,
-    wd_saturday.avg_fare_per_trip AS sat_avg_fare_per_trip,
-    wd_saturday.avg_trip_duration AS sat_avg_trip_duration,
-
-    -- Sunday Metrics
-    wd_sunday.avg_trips_per_day AS sun_avg_trip_count,
-    wd_sunday.avg_fare_per_trip AS sun_avg_fare_per_trip,
-    wd_sunday.avg_trip_duration AS sun_avg_trip_duration
-
-FROM
-    -- Subquery for Saturday Data
-    (SELECT * FROM weekend_data WHERE day_of_week = 6) AS wd_saturday
-
-JOIN
-    -- Subquery for Sunday Data
-    (SELECT * FROM weekend_data WHERE day_of_week = 7) AS wd_sunday
-
-ON
-    -- Joining on Year-Month Combination
-    wd_saturday.year_month = wd_sunday.year_month
-
-ORDER BY
-    -- Ordering by Year and Month
-    wd_saturday.year_month;
-
-
-TODO:
+TODO Explore:
 https://docs.airbyte.com/operator-guides/using-the-airflow-airbyte-operator#2-create-a-dag-in-apache-airflow-to-trigger-your-airbyte-job
 
 https://docs.airbyte.com/deploying-airbyte/on-plural#running-with-external-airflow
@@ -74,7 +6,6 @@ https://docs.airbyte.com/deploying-airbyte/on-plural#running-with-external-airfl
 https://github.com/astronomer/astronomer-cosmos/blob/main/Tiltfile
 
 https://github.com/astronomer/astronomer-providers/blob/main/tests/conftest.py
-
 
 https://github.demo.trial.altinity.cloud:8443/play?user=demo#LS0gKipQcmUtY2FsY3VsYXRpbmcgV2Vla2VuZCBUcmlwIERhdGEqKgoKV0lUSCB3ZWVrZW5kX2RhdGEgQVMgKAogICAgU0VMRUNUCiAgICAgICAgLS0gRXh0cmFjdGluZyBEYXkgb2YgV2VlayAoNiBmb3IgU2F0dXJkYXksIDcgZm9yIFN1bmRheSkKICAgICAgICB0b0RheU9mV2VlayhwaWNrdXBfZGF0ZXRpbWUpIEFTIGRheV9vZl93ZWVrLAoKICAgICAgICAtLSBGb3JtYXR0aW5nIFllYXIgYW5kIE1vbnRoIGFzIGEgU2luZ2xlIFN0cmluZwogICAgICAgIGZvcm1hdERhdGVUaW1lKHBpY2t1cF9kYXRldGltZSwgJyVZLSVtJykgQVMgeWVhcl9tb250aCwKCiAgICAgICAgLS0gQ291bnRpbmcgVG90YWwgV2Vla2VuZCBUcmlwcwogICAgICAgIENPVU5UKCopIEFTIHRvdGFsX3RyaXBzLAoKICAgICAgICAtLSBBdmVyYWdlIFRyaXBzIHBlciBEYXkgKFRvdGFsIFRyaXBzIC8gVW5pcXVlIERheXMpCiAgICAgICAgUk9VTkQoQ09VTlQoKikgLyBDT1VOVChESVNUSU5DVCB0b0RhdGUocGlja3VwX2RhdGV0aW1lKSksIDEpIEFTIGF2Z190cmlwc19wZXJfZGF5LAoKICAgICAgICAtLSBBdmVyYWdlIEZhcmUgcGVyIFRyaXAgKFJvdW5kZWQgdG8gT25lIERlY2ltYWwpCiAgICAgICAgUk9VTkQoQVZHKGZhcmVfYW1vdW50KSwgMSkgQVMgYXZnX2ZhcmVfcGVyX3RyaXAsCgogICAgICAgIC0tIEF2ZXJhZ2UgVHJpcCBEdXJhdGlvbiBpbiBNaW51dGVzIChSb3VuZGVkIHRvIE9uZSBEZWNpbWFsKQogICAgICAgIFJPVU5EKEFWRyhkYXRlRGlmZignbWludXRlJywgcGlja3VwX2RhdGV0aW1lLCBkcm9wb2ZmX2RhdGV0aW1lKSksIDEpIEFTIGF2Z190cmlwX2R1cmF0aW9uCgogICAgRlJPTQogICAgICAgIHRyaXBkYXRhCgogICAgV0hFUkUKICAgICAgICAtLSBGaWx0ZXJpbmcgRGF0ZSBSYW5nZSAoMjAxNC0wMS0wMSB0byAyMDE2LTEyLTMxKQogICAgICAgIHRvRGF0ZShwaWNrdXBfZGF0ZXRpbWUpIEJFVFdFRU4gJzIwMTQtMDEtMDEnIEFORCAnMjAxNi0xMi0zMScKICAgICAgICAtLSBJbmNsdWRpbmcgV2Vla2VuZHMgT25seSAoU2F0dXJkYXkgYW5kIFN1bmRheSkKICAgICAgICBBTkQgdG9EYXlPZldlZWsocGlja3VwX2RhdGV0aW1lKSBJTiAoNiwgNykKCiAgICBHUk9VUCBCWQogICAgICAgIGRheV9vZl93ZWVrLCB5ZWFyX21vbnRoCikKCi0tICoqU2VsZWN0aW5nIGFuZCBGb3JtYXR0aW5nIEZpbmFsIE91dHB1dCoqCgpTRUxFQ1QKICAgIC0tIFllYXItTW9udGggQ29tYmluYXRpb24KICAgIHdkX3NhdHVyZGF5LnllYXJfbW9udGgsCgogICAgLS0gU2F0dXJkYXkgTWV0cmljcwogICAgd2Rfc2F0dXJkYXkuYXZnX3RyaXBzX3Blcl9kYXkgQVMgc2F0X2F2Z190cmlwX2NvdW50LAogICAgd2Rfc2F0dXJkYXkuYXZnX2ZhcmVfcGVyX3RyaXAgQVMgc2F0X2F2Z19mYXJlX3Blcl90cmlwLAogICAgd2Rfc2F0dXJkYXkuYXZnX3RyaXBfZHVyYXRpb24gQVMgc2F0X2F2Z190cmlwX2R1cmF0aW9uLAoKICAgIC0tIFN1bmRheSBNZXRyaWNzCiAgICB3ZF9zdW5kYXkuYXZnX3RyaXBzX3Blcl9kYXkgQVMgc3VuX2F2Z190cmlwX2NvdW50LAogICAgd2Rfc3VuZGF5LmF2Z19mYXJlX3Blcl90cmlwIEFTIHN1bl9hdmdfZmFyZV9wZXJfdHJpcCwKICAgIHdkX3N1bmRheS5hdmdfdHJpcF9kdXJhdGlvbiBBUyBzdW5fYXZnX3RyaXBfZHVyYXRpb24KCkZST00KICAgIC0tIFN1YnF1ZXJ5IGZvciBTYXR1cmRheSBEYXRhCiAgICAoU0VMRUNUICogRlJPTSB3ZWVrZW5kX2RhdGEgV0hFUkUgZGF5X29mX3dlZWsgPSA2KSBBUyB3ZF9zYXR1cmRheQoKSk9JTgogICAgLS0gU3VicXVlcnkgZm9yIFN1bmRheSBEYXRhCiAgICAoU0VMRUNUICogRlJPTSB3ZWVrZW5kX2RhdGEgV0hFUkUgZGF5X29mX3dlZWsgPSA3KSBBUyB3ZF9zdW5kYXkKCk9OCiAgICAtLSBKb2luaW5nIG9uIFllYXItTW9udGggQ29tYmluYXRpb24KICAgIHdkX3NhdHVyZGF5LnllYXJfbW9udGggPSB3ZF9zdW5kYXkueWVhcl9tb250aAoKT1JERVIgQlkKICAgIC0tIE9yZGVyaW5nIGJ5IFllYXIgYW5kIE1vbnRoCiAgICB3ZF9zYXR1cmRheS55ZWFyX21vbnRoOwo=
 https://docs.altinity.com/altinitycloud/demonstration-cluster/#dbeaver-and-jdbc-connectors
@@ -85,6 +16,7 @@ fdVWHGGDfRzS2J3tjr2GCA
 
 curl --create-dirs -o $HOME/.postgresql/root.crt 'https://cockroachlabs.cloud/clusters/df3114a9-8f79-4189-8784-76e34089b984/cert'
 
+# PUBLIC DB - so its fine to commit for now
 postgresql://demo:fdVWHGGDfRzS2J3tjr2GCA@demoteddy-5340.6zw.aws-eu-west-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full
 
 - Read Clickhouse SQL

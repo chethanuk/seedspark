@@ -12,9 +12,12 @@ on:
     - main
     - '!release*'
 
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-
+    inputs:
+      environment:
+        required: true
+        type: environment
 jobs:
   # TruffleHog OSS is a tool that searches through git repositories for high entropy strings,
   # digging deep into commit history and branches. It's effective at finding secrets accidentally committed.

@@ -42,9 +42,9 @@ class SparkApps(ABC):
         jar_dir: str = JAR_DIR_DEFAULT,
     ) -> None:
         self.app_name = app_name
-        self.extra_configs = extra_configs or {}
+        if enable_delta_jar:
+            self.extra_configs = {**(self._apply_delta_config()), **(extra_configs or {})}
         self.spark_master = spark_master
-        self._spark = None
         self._sc = None
         self.jar_dir = jar_dir
         self.delta_version = delta_version
@@ -55,21 +55,23 @@ class SparkApps(ABC):
         self.extra_packages = extra_packages or []
         if log_env:
             self.log_sys_env()
+        self._spark = self._initialize_spark_session()
 
     @property
     @log_exceptions
     def spark_conf(self) -> SparkConf:
         """Property to get SparkConf object with all configurations set."""
-        spark_conf = SparkConf().setAppName(self.app_name)
+        spark_conf = SparkSession.builder.appName(self.app_name)
         if self.spark_master:
-            spark_conf.setMaster(self.spark_master)
+            spark_conf.master(self.spark_master)
         if self.extra_packages or self.enable_delta_jar:
             packages = self._build_maven_packages()
-            spark_conf.set("spark.jars.packages", packages)
+            spark_conf.config("spark.jars.packages", packages)
+            log.info(f"Setting spark.jars.packages to {packages}")
         if self.extra_jars:
-            spark_conf.set("spark.jars", ",".join(self.resolve_jar_urls(self.extra_jars)))
+            spark_conf.config("spark.jars", ",".join(self.resolve_jar_urls(self.extra_jars)))
         for key, value in self.extra_configs.items():
-            spark_conf.set(key, value)
+            spark_conf.config(key, value)
         self._set_adaptive_configs(spark_conf)
         return spark_conf
 
@@ -82,8 +84,6 @@ class SparkApps(ABC):
     @log_exceptions
     def spark(self) -> SparkSession:
         """Lazily initializes and returns the SparkSession object."""
-        if not self._spark:
-            self._initialize_spark_session()
         return self._spark
 
     @property
@@ -96,16 +96,20 @@ class SparkApps(ABC):
     def _initialize_spark_session(self) -> None:
         """Initializes the SparkSession and SparkContext."""
         _spark_conf = self.spark_conf
-        self._spark = SparkSession.builder.config(conf=_spark_conf).getOrCreate()
-        self._sc = self._spark.sparkContext
+        log.info("Initializing SparkSession")
+        _spark = _spark_conf.getOrCreate()
+        log.info(
+            f"SparkSession initialized with version: {_spark.version} and configurations: {_spark.sparkContext.getConf().getAll()}"
+        )
+        return _spark
 
     @log_exceptions
     def _set_adaptive_configs(self, spark_conf: SparkConf) -> None:
         """Sets adaptive query execution configurations if enabled."""
         if self.extra_configs.get("enableAdaptiveQueryExecution", False):
-            spark_conf.set("spark.sql.adaptive.enabled", "true")
-            spark_conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")
-            spark_conf.set("spark.sql.adaptive.skewJoin.enabled", "true")
+            spark_conf.config("spark.sql.adaptive.enabled", "true")
+            spark_conf.config("spark.sql.adaptive.coalescePartitions.enabled", "true")
+            spark_conf.config("spark.sql.adaptive.skewJoin.enabled", "true")
 
     @log_exceptions
     def stop_spark_session(self) -> None:

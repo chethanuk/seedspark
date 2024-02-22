@@ -6,6 +6,13 @@ Run Airflow Dags
 Deploy Your Project Locally
 ===========================
 
+```bash
+export AIRFLOW_HOME=`pwd`
+airflow standalone
+```
+
+OR
+
 1. Start Airflow on your local machine by running 'astro dev start'.
 
 This command will spin up 4 Docker containers on your machine, each for a different Airflow component:

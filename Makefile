@@ -33,17 +33,45 @@ install: $(POETRY)
 	@echo "Checking dependencies..."
 	@if [ ! -d .venv ]; then $(POETRY) install; fi
 
-# Create a virtual environment using poetry and activate it
-# This allows you to run commands in the project context
-.PHONY: shell
-shell: install
+.PHONY: poetry-config
+poetry-config: $(POETRY)
+	@$(POETRY) config virtualenvs.create true
+	@$(POETRY) config virtualenvs.in-project true
+
+# Create a virtual environment using Python
+# This step creates a .venv directory in the project root
+.PHONY: setup-venv
+setup-venv: poetry-config
 	@echo "Creating virtual environment..."
-	@$(POETRY) shell
+	@python -m venv .venv
+	@echo "Activating virtual environment..."
+	@source .venv/bin/activate
+
+# Activate the virtual environment
+# This step is necessary to run commands in the project context
+# .PHONY: activate-venv
+# activate-venv:
+# 	source .venv/bin/activate
+# 	which python
+
+# Install project dependencies using Poetry
+# This step installs all required packages specified in pyproject.toml
+.PHONY: install-poetry-packages
+install-poetry-packages:
+	@echo "Installing Poetry packages..."
+	@$(POETRY) install
+
+# # Create a virtual environment using poetry and activate it
+# # This allows you to run commands in the project context
+# .PHONY: shell
+# shell: install
+# 	@echo "Creating virtual environment..."
+# 	@$(POETRY) shell
 
 # Run the tests using poetry
 # This ensures that the tests are run with the correct dependencies
 .PHONY: test
-test: install
+test: install-poetry-packages
 	@echo "Running tests..."
 	@$(POETRY) run pytest
 

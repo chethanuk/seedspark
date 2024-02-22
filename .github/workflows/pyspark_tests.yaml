@@ -1,0 +1,64 @@
+name: PySpark Tests
+
+on:
+  push:
+    branches:
+    - main
+    - '!release*'
+  pull_request:
+    branches:
+    - main
+    - '!release*'
+env:
+  DAG_FOLDER: dags/
+  # WORKDIR: PySparkdags
+jobs:
+  sparktests:
+    name: Run Spark tests
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10']
+        spark-version: [3.5.0]
+        os: [ubuntu-22.04]       # , "macos-latest"
+        scala-version: ['2.12']
+    env:
+      PYTHON_VERSION: ${{ matrix.python-version }}
+      SPARK_VERSION: ${{ matrix.spark-version }}
+      SCALA_VERSION: ${{ matrix.scala-version }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Poetry
+      run: |
+        pipx install poetry
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      id: setuppy
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: poetry
+        # cache-dependency-path: |
+        #   ~/.cache/pypoetry
+        #   ~/.cache/pip
+      env:
+        PIP_ROOT_USER_ACTION: ignore
+
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: temurin
+
+    - uses: vemonet/setup-spark@v1
+      with:
+        spark-version: 3.5.0
+        hadoop-version: '3'
+
+    - run: spark-submit --version
+
+    - run: |
+        poetry install --with=testing --no-interaction
+        python seedspark/examples/weekend_fares_kpi.py

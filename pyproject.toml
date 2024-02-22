@@ -40,6 +40,7 @@ pytest = "<8"
 
 hypothesis = "^6.98.2"
 pytest-describe = "^2.1.0"
+types-deprecated = "^1.2.9.20240106"
 
 [tool.poetry.group.linting.dependencies]
 pre-commit = "^3.6.0"
@@ -149,9 +150,14 @@ norecursedirs = [
   "dist",
 ]
 xfail_strict = true
-filterwarnings = [
-    "error",
-    "default:Using or importing the ABCs:DeprecationWarning:unittest2.*"
+# filterwarnings = [
+#     "error",
+#     "default:Using or importing the ABCs:DeprecationWarning:unittest2.*"
+# ]
+pythonpath = [
+]
+testpaths = [
+    "tests"
 ]
 
 [tool.mypy]

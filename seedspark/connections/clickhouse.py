@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import warnings
+from typing import ClassVar
 
-# from typing import ClassVar
 from onetl._util.classproperty import classproperty
 from onetl.connection.db_connection.jdbc_connection import JDBCConnection
 from onetl.connection.db_connection.jdbc_mixin.options import JDBCOptions
@@ -63,7 +63,7 @@ class ClickHouse(JDBCConnection):
 
     Extra = ClickHouseExtra
     Dialect = ClickhouseDialect
-    DRIVER: str = "com.clickhouse.jdbc.ClickHouseDriver"
+    DRIVER: ClassVar[str] = "com.clickhouse.jdbc.ClickHouseDriver"
 
     @slot
     @classmethod

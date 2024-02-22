@@ -28,9 +28,9 @@ class SparkDeltaClickhouseApp(SparkApps):
         self.extra_jars = extra_jars or []
         self.environment = environment
         self._setup_jars()
+        self.extra_packages = extra_packages or []
+        self.extra_packages.extend(ClickHouse.get_packages())
 
-        print(f"self.extra_jars: {self.extra_jars}")
-        print(f"self.extra_configs: {self.extra_configs}")
         super().__init__(
             app_name,
             extra_packages=extra_packages,
@@ -91,7 +91,7 @@ class SparkDeltaClickhouseApp(SparkApps):
         Returns:
             ClickHouseConnection: A connection object.
         """
-        clickhouse = ClickHouse(
+        return ClickHouse(
             spark=self.spark,
             host=self.clickhouse_config.host,
             port=self.clickhouse_config.http_port,
@@ -100,9 +100,6 @@ class SparkDeltaClickhouseApp(SparkApps):
             database=self.clickhouse_config.database,
             extra={"ssl": str(self.clickhouse_config.ssl).lower()},
         )
-
-        print(f"clickhouse: {clickhouse}")
-        return clickhouse
 
     @cached_property
     def configs(self) -> ConfigFactory:  # Type hint can clarify

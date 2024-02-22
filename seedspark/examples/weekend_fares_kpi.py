@@ -40,7 +40,13 @@ class WeekendFaresKPIApp:
     Class to compute weekend metrics using SparkDeltaClickhouseApp.
     """
 
-    def __init__(self, app_name="WeekendFaresKPIApp", environment="prod", sql_file_path: Optional[str] = None):
+    def __init__(
+        self,
+        app_name="WeekendFaresKPIApp",
+        environment="prod",
+        sql_file_path: Optional[str] = None,
+        sqllite_db_path: Optional[str] = None,
+    ):
         self.clickhouse_app = SparkDeltaClickhouseApp(
             app_name=app_name, environment=environment, extra_packages=["org.xerial:sqlite-jdbc:3.45.1.0"]
         )
@@ -49,21 +55,22 @@ class WeekendFaresKPIApp:
             sql_file_path = f"{root_dir_path}/sql/weekend_trip_metrics.sql"
         self.sql_query = parse_sql_file(sql_file_path)
 
+        # JDBC URL for SQLite
+        if sqllite_db_path is None:
+            sqllite_db_path = "weekend_fares_kpi.db"
+        self.sqlite_jdbc_url = f"jdbc:sqlite:{sqllite_db_path}"
+        self.table_name = "weekend_fares_kpi"
+
     def execute(self):
         """
         Execute specific metrics calculations for weekends and return DataFrame.
         """
         # Example SQL query
-        print(self.clickhouse_app.clickhouse)
         df = self.clickhouse_app.execute(self.sql_query)
 
-        # JDBC URL for SQLite
-        jdbc_url = "jdbc:sqlite:weekend_fares_kpi.db"
-
         # Write to SQLite using JDBC
-        table_name = "weekend_fares_kpi"
-        log.info(f"Writing to SQLite table: {table_name} with JDBC URL: {jdbc_url}")
-        df.write.format("jdbc").option("url", jdbc_url).option("dbtable", "weekend_fares_kpi").option(
+        log.info(f"Writing to SQLite table: {self.table_name} with JDBC URL: {self.sqlite_jdbc_url}")
+        df.write.format("jdbc").option("url", self.sqlite_jdbc_url).option("dbtable", self.table_name).option(
             "driver", "org.sqlite.JDBC"
         ).mode("overwrite").save()
 

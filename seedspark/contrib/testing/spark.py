@@ -50,7 +50,7 @@ class BaseSparkTest:
         logging.getLogger("py4j").setLevel(logging.ERROR)
         sc.setLogLevel("ERROR")
 
-    @pytest.fixture()
+    @pytest.fixture(scope="function")
     def sparkSession(self):
         """Function-level fixture to manage temporary directories for each test."""
         temp_dir = tempfile.TemporaryDirectory()

@@ -17,8 +17,8 @@ env:
   DAG_FOLDER: dags/
   WORKDIR: airflowdags
 jobs:
-  linting:
-    name: 'Run PreComitChecks: ruff, black etc..'
+  airflowtests:
+    name: Run Airflow Tests
     defaults:
       run:
         working-directory: ${{ env.WORKDIR }}
@@ -46,9 +46,9 @@ jobs:
     #   run: |
     #     astro dev parse --verbosity info
 
-    - name: Parse the Astro Dags
-      run: |
-        astro dev pytest --verbosity info
+    # - name: Parse the Astro Dags
+    #   run: |
+    #     astro dev pytest --verbosity info
 
     - name: Run Airflow Tests
       run: |

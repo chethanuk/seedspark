@@ -45,7 +45,7 @@ types-deprecated = "^1.2.9.20240106"
 [tool.poetry.group.linting.dependencies]
 pre-commit = "^3.6.0"
 ruff = "^0.2.1"
-black = "^24.1.1"
+black = "^24.3.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
